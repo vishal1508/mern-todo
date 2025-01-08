@@ -3,6 +3,7 @@ import { hashPassword } from "../utils/brcrypts.js";
 
 const signup = async(req,res) => {
     const {username, email,password} = req.body;
+    console.log(req?.body)
     try{
         console.log(!username || !email || !password  || username === '' || email === '' || password === '')
         if(username === ''){
