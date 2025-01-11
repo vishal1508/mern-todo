@@ -1,24 +1,22 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart,signInSuccess,signInFailure } from "../redux/user/userSlice";
 const SignIn = () => {
   const [formdata, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {loading,error:errorMessage} = useSelector(state => state.user);
   const handleChange = (e) => {
-    console.log(e.target.id, ":=", e.target.value);
     setFormData({ ...formdata, [e.target.id]: e.target.value.trim() });
   };
-  console.log(formdata);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       if ( !formdata?.password || !formdata?.email) {
-        return setErrorMessage("all field are Required");
+        dispatch(signInFailure("Please fill all the fields"))
       }
 
       const signupResponse = await fetch("/api/auth/signin", {
@@ -28,19 +26,19 @@ const SignIn = () => {
       });
       const data = await signupResponse.json();
       // Handle response
-      if (signupResponse.success === false) {
-        const errorData = await signupResponse.json();
-        throw new Error(errorData.message || "Signup failed");
+      if (data.success === false) {
+        console.log(data);
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
+     
       if(signupResponse.ok){
+        dispatch(signInSuccess(data));
         navigate('/');
       }
      
       // Perform actions after successful signup (e.g., redirect, show success message)
     } catch (error) {
-      setErrorMessage(error.message || "An unexpected error occurred");
-      setLoading(false);
+      dispatch(signInFailure(error.message))
     }
   };
 
@@ -70,7 +68,7 @@ const SignIn = () => {
               <Label value="Your Email" />
               <TextInput
                 type="email"
-                placeholder="email"
+                placeholder="user@ddf.com"
                 id="email"
                 onChange={handleChange}
               />
@@ -79,7 +77,7 @@ const SignIn = () => {
               <Label value="Your Password" />
               <TextInput
                 type="password"
-                placeholder="password"
+                placeholder="***********"
                 id="password"
                 onChange={handleChange}
               />
