@@ -1,6 +1,6 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { Link, Links } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [formdata, setFormData] = useState({});
