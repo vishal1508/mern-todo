@@ -1,16 +1,15 @@
 import User from "../models/user.model.js";
-import { hashPassword } from "../utils/brcrypts.js";
-
-const signup = async(req,res) => {
+import { comparePassword, hashPassword } from "../utils/brcrypts.js";
+import { AppError } from "../utils/error.js";
+import jwt from 'jsonwebtoken'
+const signup = async(req,res,next) => {
     const {username, email,password} = req.body;
     console.log(req?.body)
     try{
         console.log(!username || !email || !password  || username === '' || email === '' || password === '')
         if(username === ''){
             console.log(username)
-            throw new Error({
-                message:"all fields are mandatory"
-            })
+            throw new AppError("all fields are mandatory",400)
         }
         const hasPassword =  await hashPassword(password);
         const user = new User({
@@ -21,8 +20,34 @@ const signup = async(req,res) => {
         await user.save();
         return res.status(201).json({message:"User has Signup Successfully"});
     }catch(error){
-        return res.status(400).json({message:error?.message});
+        next(error);
+    }
+}
+const signin = async(req,res,next) => {
+    const {email , password} = req?.body;
+    try{
+        if(!email || !password || email === "" || password === ""){
+            throw new Error("All Field are Require");
+        }
+
+        const validUser = await User?.findOne({email});
+
+        if(!validUser){
+            throw new AppError("user not found",404)
+        }
+        const validPassword = await comparePassword(password,validUser?.password);
+        const {password:pass,...rest} = validUser._doc;
+
+        if(!validPassword){
+            throw new AppError("Invalid Password",400);
+        }
+        const token = jwt.sign({id:validUser._id}, process.env.JWT_SECRET_KEY);
+        
+        return res.status(200).cookie('access_token',token,{httpOnly:true}).json({data:rest})
+
+    }catch(error){
+        next(error);
     }
 }
 
-export {signup};
+export {signup,signin};

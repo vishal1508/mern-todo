@@ -18,3 +18,18 @@ app.listen(process.env.PORT,() => {
 app.use(express.json());
 app.use('/api/user',userRoute);
 app.use('/api/auth',auth);
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+  
+    // Log the error (optional)
+    console.error(err);
+  
+    // Send the response
+    res.status(statusCode).json({
+      success: false,
+      message,
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }), // Include stack trace in development
+    });
+  });
+  
