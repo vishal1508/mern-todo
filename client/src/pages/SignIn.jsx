@@ -2,12 +2,17 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signInStart,signInSuccess,signInFailure } from "../redux/user/userSlice";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import OAuth from "../components/OAuth.jsx";
 const SignIn = () => {
   const [formdata, setFormData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {loading,error:errorMessage} = useSelector(state => state.user);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const handleChange = (e) => {
     setFormData({ ...formdata, [e.target.id]: e.target.value.trim() });
   };
@@ -15,8 +20,8 @@ const SignIn = () => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      if ( !formdata?.password || !formdata?.email) {
-        dispatch(signInFailure("Please fill all the fields"))
+      if (!formdata?.password || !formdata?.email) {
+        dispatch(signInFailure("Please fill all the fields"));
       }
 
       const signupResponse = await fetch("/api/auth/signin", {
@@ -30,15 +35,15 @@ const SignIn = () => {
         console.log(data);
         dispatch(signInFailure(data.message));
       }
-     
-      if(signupResponse.ok){
+
+      if (signupResponse.ok) {
         dispatch(signInSuccess(data));
-        navigate('/');
+        navigate("/");
       }
-     
+
       // Perform actions after successful signup (e.g., redirect, show success message)
     } catch (error) {
-      dispatch(signInFailure(error.message))
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -97,6 +102,7 @@ const SignIn = () => {
               )}
             </Button>
           </form>
+          <OAuth />
           <div className="flex gap-2 text-sm mt-5 ">
             <span>Create an Account?</span>
             <Link to="/signup" className="text-blue-500">
@@ -114,5 +120,4 @@ const SignIn = () => {
   );
 };
 
-
-export default SignIn
+export default SignIn;
