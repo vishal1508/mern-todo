@@ -47,7 +47,6 @@ const Header = () => {
                 alt="Description of the image"
                 width="40"
                 height="40"/>
-              // <Avatar alt="user" img= rounded/>
             }
           >
             <Dropdown.Header>
