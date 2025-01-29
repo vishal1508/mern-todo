@@ -8,6 +8,7 @@ import { toggleTheme } from "../redux/theme/themeSlice.js";
 const Header = () => {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
+  const profile = currentUser?.profilePicture;
   const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   return (
@@ -43,7 +44,7 @@ const Header = () => {
             label={
               <img
                 className="rounded-full"
-                src={currentUser?.profilePicture}
+                src={profile}
                 alt="Description of the image"
                 width="40"
                 height="40"/>
