@@ -75,7 +75,8 @@ const Dashprofile = () => {
           onClick={() => imagefileRef.current.click()}
         >
           <img
-            src={imageError ? currentUser?.profilePicture : imageUrl }
+            src={currentUser?.profilePicture }
+            // src={imageError ? currentUser?.profilePicture : imageUrl }
             alt="user"
             className="w-full h-full rounded-full object-cover border-8 border-[lightgray]"
           />
