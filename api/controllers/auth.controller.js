@@ -31,7 +31,7 @@ const signin = async(req,res,next) => {
         }
 
         const validUser = await User?.findOne({email});
-
+        console.log("validUser :=> ", validUser)
         if(!validUser){
             throw new AppError("user not found",404)
         }
