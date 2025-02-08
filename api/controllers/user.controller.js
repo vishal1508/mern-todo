@@ -31,6 +31,7 @@ const updateUser = async (req, res, next) => {
       .status(200)
       .json({ user:rest, message: "user has updated Successfully" });
   } catch (error) {
+    console.log(error)
     return next(errorHandler(error));
   }
 };
